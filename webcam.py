@@ -1,4 +1,4 @@
-"""Live Haar face detection. Press q to exit."""
+"""Live Haar and MTCNN face detection. Press q to exit."""
 import argparse
 import sys
 import cv2
@@ -7,10 +7,11 @@ from detectors import create_detector
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', choices=['haar'], default='haar')
+    parser.add_argument('--model', choices=['haar', 'torch'], default='haar')
     parser.add_argument('--camera', type=int, default=0)
+    parser.add_argument('--device', choices=['auto', 'cpu', 'cuda'], default='auto')
     args = parser.parse_args()
-    detector = create_detector(args.model)
+    detector = create_detector(args.model, device=args.device)
     cap = cv2.VideoCapture(args.camera, cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_ANY)
     if not cap.isOpened():
         raise RuntimeError('Cannot open webcam; check privacy permissions or --camera')
